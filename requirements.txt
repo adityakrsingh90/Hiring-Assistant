@@ -1,5 +1,6 @@
 streamlit
 google-generativeai
 pdfplumber
+firebase-admin
 python-docx
 python-dotenv
