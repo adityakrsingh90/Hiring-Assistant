@@ -12,6 +12,11 @@ from firebase_admin import credentials, firestore
 import textwrap
 import time
 
+
+# if not firebase_admin._apps:
+#     cred = credentials.Certificate(dict(st.secrets["firebase"]))
+#     firebase_admin.initialize_app(cred)
+
 # ----------------------------
 #   Configuration & Constants
 # ----------------------------
@@ -174,15 +179,20 @@ def inject_custom_css():
 def init_firebase():
     if not firebase_admin._apps:
         try:
-            cred_path = "serviceAccountKey.json"
-            if not os.path.exists(cred_path):
-                st.error("Firebase service account file missing: serviceAccountKey.json")
-                st.stop()
-            cred = credentials.Certificate(cred_path)
+            # Streamlit Cloud
+            if os.path.exists(".streamlit/secrets.toml"):
+                cred = credentials.Certificate(dict(st.secrets["firebase"]))
+
+            # Localhost
+            else:
+                cred = credentials.Certificate("serviceAccountKey.json")
+
             firebase_admin.initialize_app(cred)
+
         except Exception as e:
             st.error(f"Firebase initialization failed: {e}")
             st.stop()
+
     return firestore.client()
 
 @st.cache_resource
