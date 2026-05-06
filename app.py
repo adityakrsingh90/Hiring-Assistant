@@ -22,7 +22,13 @@ import time
 # ----------------------------
 load_dotenv()
 
+# Localhost (.env)
 API_KEY = os.getenv("GOOGLE_API_KEY")
+
+# Streamlit Cloud (Secrets)
+if not API_KEY:
+    API_KEY = st.secrets.get("GOOGLE_API_KEY")
+
 if API_KEY:
     genai.configure(api_key=API_KEY)
 
